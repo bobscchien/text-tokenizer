@@ -22,6 +22,7 @@ To generate your own tokenizers, follow the steps below:
 ## **Notice**
 * For CJK (Chinese, Japanese, and Korean) languages, set `cjk=True` for `src.utils.tokenizer.build_bert_tokenizer` function. As a result, this function will first calculate the term frequency for each word in the specified dataset, sort the words based on their frequency, and finally save the vocabularies to a .txt file for [Bert Tokenizer](https://www.tensorflow.org/text/api_docs/python/text/BertTokenizer). <br>
 * For now, this project only supports **English** & **Chinese**. To extend to other languages, the preprocess functions for other languages should be defined in `src.utils.preprocessor`.
+* Chinese tokenizer used both Classical & Traditional Chinese datasets to build the vocabularies.  
   
 <br>
 
