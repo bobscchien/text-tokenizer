@@ -2,7 +2,7 @@
 
 ## **Description**
 This is a project to build customized text tokenizers for NLP problems, using your own datasets or datasets from [TensorFlow Datasets](https://www.tensorflow.org/datasets/overview). The core module is TensorFlow's [Bert Tokenizer](https://www.tensorflow.org/text/api_docs/python/text/BertTokenizer) from [TensorFlow Text](https://www.tensorflow.org/text/api_docs/python/text), and the main structure of this project refers to [this guide](https://www.tensorflow.org/text/guide/subwords_tokenizer#customization_and_export).<br>
-The result of tokenizers can be saved & loaded directly using `tf.saved_model.save` & `tf.saved_model.load` since they are `tf.Module` object.<br>
+The result of tokenizers can be saved & loaded directly using `tf.saved_model.save` & `tf.saved_model.load` since they are `tf.Module` object. Meanwhile, the customized tokenizer can be combined with the trained model and be saved as a single pipeline<br>
 
 <br>
 
