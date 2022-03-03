@@ -60,10 +60,10 @@ def build_bert_tokenizer(vocab_path, dataset, cjk=False,
         if cjk:
             vocab = []
             vocab_dict = collections.defaultdict(lambda: 0)
-            for tokens in tqdm.tqdm(dataset.prefetch(AUTOTUNE)):
-                for token in tf.strings.split(tokens).numpy():
+            for tokens in tqdm.tqdm(dataset.batch(batch_size).prefetch(AUTOTUNE)):
+                for token in tf.strings.split(tf.strings.join(tokens, separator=' ')).numpy():
                     vocab_dict[token.decode()] += 1
-
+        
             vocab = sorted(vocab_dict.items(), key=lambda x: x[1], reverse=True)
             vocab = [token for token, count in vocab]
             if vocab_size:
