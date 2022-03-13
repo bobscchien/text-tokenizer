@@ -69,6 +69,7 @@ def build_bert_tokenizer(vocab_path, dataset, cjk=False,
             if vocab_size:
                 vocab = vocab[:vocab_size]
             vocab = RESERVED_TOKENS + vocab
+            lower_case = False
         else:
             if vocab_size:
                 bert_vocab_params['vocab_size'] = vocab_size
@@ -76,12 +77,13 @@ def build_bert_tokenizer(vocab_path, dataset, cjk=False,
                 dataset.batch(batch_size).prefetch(AUTOTUNE),
                 **bert_vocab_params
             )
+            lower_case = True
         write_vocab_file(vocab_path, vocab)
     else:
         vocab = load_vocab_file(vocab_path)
     
     tokenizer = tf_text.BertTokenizer(vocab_path, 
-                                      lower_case=True, 
+                                      lower_case=lower_case, 
                                       unknown_token="[UNK]")
     
     print(f'\nThere are {len(vocab)} words in the dictionary\n')
@@ -121,8 +123,8 @@ def cleanup_text(reserved_tokens, token_txt):
     return result
 
 class CustomTokenizer(tf.Module):
-    def __init__(self, reserved_tokens, vocab_path):
-        self.tokenizer = tf_text.BertTokenizer(vocab_path, lower_case=True, unknown_token="[UNK]")
+    def __init__(self, reserved_tokens, vocab_path, cjk=False):
+        self.tokenizer = tf_text.BertTokenizer(vocab_path, lower_case=not cjk, unknown_token="[UNK]")
         self._reserved_tokens = reserved_tokens
         self._vocab_path = tf.saved_model.Asset(vocab_path)
 
@@ -196,6 +198,8 @@ def load_tokenizers(custom_path, max_lengths,
     """
     """
     tar_lang = tar_lang if tar_lang else inp_lang
+    inp_cjk = True if inp_lang in ['zh', 'jp', 'kr'] else False
+    tar_cjk = True if tar_lang in ['zh', 'jp', 'kr'] else False
 
     ### Tokenizers
 
@@ -205,7 +209,7 @@ def load_tokenizers(custom_path, max_lengths,
         # Pretrained Bert Tokenizer
         tokenizers.inp = HFSelectTokenizer(inp_bert).from_pretrained(inp_bert, 
                                                                      cache_dir=inp_cache, 
-                                                                     do_lower_case=True)
+                                                                     do_lower_case=not inp_cjk)
     else:
         # Customized Bert Tokenizer
         tokenizers.inp = getattr(tf.saved_model.load(custom_path), inp_lang)
@@ -214,7 +218,7 @@ def load_tokenizers(custom_path, max_lengths,
         # Pretrained Bert Tokenizer
         tokenizers.tar = HFSelectTokenizer(tar_bert).from_pretrained(tar_bert, 
                                                                      cache_dir=tar_cache, 
-                                                                     do_lower_case=True)
+                                                                     do_lower_case=not tar_cjk)
     else:
         # Customized Bert Tokenizer
         tokenizers.tar = getattr(tf.saved_model.load(custom_path), tar_lang)
