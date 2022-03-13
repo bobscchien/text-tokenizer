@@ -7,9 +7,10 @@ The result of tokenizers can be saved & loaded directly using `tf.saved_model.sa
 <br>
 
 ## **Usage**
-**Main Program**: <br>
+**Main Program** <br>
 The main program of this project is `src/custom_bert_tokenizer.ipynb`, which is directly written via Jupyter Notebook, for demonstration purpose. <br>
-**Configuration**: <br>
+
+**Configuration** <br>
 `config/conf.ini` is the configuration file for main program to store `data` & `models` in a seperate data directory, while `config/conf-repo.ini` uses the paths in this repository.<br>
 To generate your own tokenizers, follow the steps below:
 1. Modify the path in `config/conf.ini` or replace the default configuration by `cd config && cp conf.ini conf.ini.copy && mv conf-repo.ini conf.ini` to store `data` & `models` directly in this repository.
